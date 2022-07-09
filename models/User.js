@@ -23,7 +23,9 @@ let schema  = mongoose.Schema({
         type : Date,
         default : Date.now
     },
-    isAWorker : Boolean
+    isAWorker : Boolean,
+    isActive : Boolean,
+    isOnline : Boolean
 
 });
 

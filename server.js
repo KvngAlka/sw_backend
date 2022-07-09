@@ -4,8 +4,9 @@ import mongoose from 'mongoose'
 import routes from './routes/routes.js'
 import { authRouter } from './routes/auth.js'
 import env from 'dotenv';
-
 import path from 'path'
+import { userRouter } from './routes/user.js'
+import { postRouter } from './routes/post.js'
 
 env.config();
 
@@ -16,19 +17,12 @@ let port  = process.env.PORT || 3088;
 
 
 //DB
-let dbPassword =  process.env.ADMIN_PASSWORD;  //"adminpassword"
 const connectionParams={
     useNewUrlParser: true,
     useUnifiedTopology: true 
 }
 
 let dbUrl = process.env.DB_URL;
-
-
-
-
-
-
 
 
 // CONNECT TO DATABASE
@@ -39,8 +33,12 @@ mongoose.connect(dbUrl,connectionParams)
     //Middlewares
     app.use(express.json());
     app.use(cors());
+
+    //Routes
     app.use("/api", routes);
     app.use('/api/auth',authRouter )
+    app.use("/api/user", userRouter)
+    app.use("/api/post", postRouter)
 
 
     //Index Route

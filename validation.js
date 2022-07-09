@@ -39,3 +39,21 @@ export const validateLogin = (data)=>{
 
     return {error}
 }
+
+
+
+
+export const validateClientPost = (data)=>{
+    
+    const schema = Joi.object({
+        ownerId : Joi.string().required(),
+        title : Joi.string(),
+        description : Joi.string(),
+        location : Joi.string().required(),
+        workCategory : Joi.string().required()
+    })
+
+    let {error} = schema.validate(data);
+
+    return {error}
+}
