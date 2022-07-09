@@ -1,5 +1,5 @@
 import { Router } from "express";
-import User from './models/User.js'
+import User from '../models/User.js'
 
 
 
@@ -14,13 +14,6 @@ router.get("/all/users", async(req,res)=>{
 })
 
 
-
-router.post("/add/user", async (req, res) => {
-    const body = req.body;
-	const post = new User({...body})
-	await post.save()
-	res.send(post)
-})
 
 
 

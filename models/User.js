@@ -1,13 +1,28 @@
 import mongoose from "mongoose";
 
 let schema  = mongoose.Schema({
-    fullName : String,
+    fullName : {
+        type : String,
+        required : true,
+    },
     age : String,
-    phoneNumber : Number,
+    phoneNumber : {
+        type : String,
+        required : true,
+        min : 10,
+        max : 10
+    },
     gender : String,
     location : String,
     ghanaCardNumber : String,
-    password : String,
+    password : {
+        type : String,
+        min : 6
+    },
+    date : {
+        type : Date,
+        default : Date.now
+    },
     isAWorker : Boolean
 
 });
