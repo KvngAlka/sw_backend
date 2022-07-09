@@ -14,17 +14,17 @@ authRouter.post('/user/register',async(req,res)=>{
 
     let {error}  = validateRegisteration(body)
 
-    if(error) return res.status(400).send(error.details[0].message);
+    if(error) return res.send({code : 400,msg : error.details[0].message});
     
     if(body?.isAWorker){
         //check if Ghana Card Number provided
         let {ghanaCardNumber} = body;
-        if(!ghanaCardNumber) return res.status(400).send("Ghana Card Number Required for workers");
+        if(!ghanaCardNumber) return res.send({code : 400, msg : "Ghana Card Number Required for workers"});
     }
 
     const {phoneNumber} = body;
     const userAlreadyExist = await userExists(phoneNumber);
-    if(userAlreadyExist) return res.status(400).send("User already exists");
+    if(userAlreadyExist) return res.send({code : 400, msg : "User already exists"});
 
 
 
@@ -44,13 +44,13 @@ authRouter.post('/user/register',async(req,res)=>{
 authRouter.post("/user/login",async(req,res)=>{
     const {body} = req;
     let {error} = validateLogin(body);
-    if(error) return res.status(400).send(error.details[0].message);
+    if(error) return res.send({code : 400, msg : error.details[0].message});
 
     let {phoneNumber} = body;
     let user = await userExists(phoneNumber)
 
     console.log(user)
-    if(!user) return res.status(400).send("User does not exist");
+    if(!user) return res.send({code : 400, msg : "User does not exist"});
 
     let token = jwt.sign(body,process.env.TOKEN_SECRET);
 
