@@ -23,7 +23,7 @@ export const validateRegisteration = (data)=>{
 
 
 export const userExists = async(phoneNumber)=>{
-    let user = await User.findOne({phoneNumber});
+    let user = await User.find({phoneNumber});
     // const _user = await user
     return user;
 }
