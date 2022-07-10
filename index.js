@@ -62,32 +62,3 @@ mongoose.connect(dbUrl,connectionParams)
     console.error(`Error connecting to the database. \n${err}`);
 })
 
-
-
-
-
-
-
-//test here...
-
-
-// app.use(express.json());
-// app.use(cors());
-
-
-// app.get('/', (req,res)=>{
-
-//     if(req.accepts('html')){
-//         let welcomeFilePath = path.join(process.cwd() + "/templates/Welcome.html");
-//         res.sendFile(welcomeFilePath);
-//     }else if(req.accepts('json')){
-//         res.send({welcome : "Welocme to Skilled Workers API"})
-//     }else{
-//         res.send("Welcome to Skilled Workers API")
-//     }
-    
-// })
-
-
-// app.listen(port, ()=> console.log(`listening on localhost:${port}`));
-

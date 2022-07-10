@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { userExists, validateLogin, validateRegisteration } from '../validation.js';
+import { isValidCredentials, userExists, validateLogin, validateRegisteration } from '../validation.js';
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import User from '../models/User.js';
@@ -24,7 +24,7 @@ authRouter.post('/user/register',async(req,res)=>{
 
     const {phoneNumber} = body;
     const userAlreadyExist = await userExists(phoneNumber);
-    if(userAlreadyExist.length !== 0) return res.send({code : 400, msg : "User already exists"});
+    if(userAlreadyExist) return res.send({code : 400, msg : "User already exists"});
 
 
 
@@ -46,20 +46,29 @@ authRouter.post("/user/login",async(req,res)=>{
     let {error} = validateLogin(body);
     if(error) return res.send({code : 400, msg : error.details[0].message});
 
-    let {phoneNumber} = body;
-    let user = await userExists(phoneNumber)
+    let {phoneNumber, password} = body;
 
-    console.log(user)
-    if(user.length === 0) return res.send({code : 400, msg : "User does not exist"});
+    const user =  await userExists(phoneNumber);
 
-    let token = jwt.sign(body,process.env.TOKEN_SECRET);
+    if(!user) return res.send({code : 400, msg : "User doesn't exist"})
 
 
-    res.header("Authorization",token).send({
-        code : 200,
-        msg : "Login Successfull",
-        data : {...user,token }
-    })
+    if(user){
+        //CHECK IF PASSWORD IS CORRECT
+        const valid = await bcrypt.compare(password, user.password);
+        
+        if(valid){
+            let token = jwt.sign(body,process.env.TOKEN_SECRET);
+            res.header("Authorization",token).send({
+                code : 200,
+                msg : "Login Successfull",
+                data : {...user,token }
+            })
+        }else{
+            res.send({code : 400, msg : "phone number or password is wrong"})
+        }
+
+    }
 
 })
 
