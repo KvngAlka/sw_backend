@@ -50,7 +50,7 @@ authRouter.post("/user/login",async(req,res)=>{
     let user = await userExists(phoneNumber)
 
     console.log(user)
-    if(!user) return res.send({code : 400, msg : "User does not exist"});
+    if(user.length === 0) return res.send({code : 400, msg : "User does not exist"});
 
     let token = jwt.sign(body,process.env.TOKEN_SECRET);
 
