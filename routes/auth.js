@@ -24,7 +24,7 @@ authRouter.post('/user/register',async(req,res)=>{
 
     const {phoneNumber} = body;
     const userAlreadyExist = await userExists(phoneNumber);
-    if(userAlreadyExist) return res.send({code : 400, msg : "User already exists"});
+    if(userAlreadyExist.length !== 0) return res.send({code : 400, msg : "User already exists"});
 
 
 
@@ -32,7 +32,7 @@ authRouter.post('/user/register',async(req,res)=>{
     let salt = await bcrypt.genSalt(10);
     let hashedPassword = await bcrypt.hash(body.password,salt);
 
-    let user = new User({...body, password : hashedPassword});
+    let user = new User({...body, password : hashedPassword, isActive : true, isOnline : true});
     let savedUSer = await user.save();
 
     res.json(savedUSer);
@@ -56,6 +56,7 @@ authRouter.post("/user/login",async(req,res)=>{
 
 
     res.header("Authorization",token).send({
+        code : 200,
         msg : "Login Successfull",
         data : {...user,token }
     })
