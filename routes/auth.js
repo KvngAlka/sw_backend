@@ -54,6 +54,7 @@ authRouter.post("/user/login",async(req,res)=>{
 
 
     if(user){
+        console.log(user)
         //CHECK IF PASSWORD IS CORRECT
         const valid = await bcrypt.compare(password, user.password);
         
@@ -62,7 +63,8 @@ authRouter.post("/user/login",async(req,res)=>{
             res.header("Authorization",token).send({
                 code : 200,
                 msg : "Login Successfull",
-                data : {...user,token }
+                accessToken : token,
+                data : user
             })
         }else{
             res.send({code : 400, msg : "phone number or password is wrong"})
