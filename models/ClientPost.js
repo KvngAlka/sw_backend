@@ -1,8 +1,5 @@
 import mongoose from "mongoose";
 
-
-
-
 const schema  = mongoose.Schema({
     ownerId : String,
     title : String,
