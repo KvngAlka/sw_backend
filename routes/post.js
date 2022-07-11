@@ -23,7 +23,7 @@ postRouter.post("/add",authToken,async(req,res)=>{
 })
 
 
-postRouter.put("/edit",(req,res)=>{
+postRouter.put("/edit",authToken,async(req,res)=>{
     const {_id,ownerId} = req.body;
     const {error} = validateClientPost(req.body);
     if(error) return res.status(400).send(error.details[0].message);
