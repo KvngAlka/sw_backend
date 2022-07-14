@@ -81,4 +81,29 @@ postRouter.post("/get/clientposts", authToken,async(req,res)=>{
 
 
 
+postRouter.post("/worker/accept/post", authToken, async(req,res)=>{
+    const {postId} = req.body;
+
+    //check if post has not been already accepted
+    const post = await ClientPost.find({_id : postId})[0];
+    if(post){
+        if(post.isAccepted) return res.send({code : 400, msg : "Job is already taken by another worker."});
+
+        else {
+            const postUpdated = ClientPost.updateOne({_id },{$set : {isAccepted : true}});
+            const {acknowledged} = postUpdated;
+            if(acknowledged){
+                res.send({code : 201, msg : "Job accepted successfully"})
+            }else{
+                res.send({code : 401, msg: "Sorry.Something went wrong accepting job"})
+            }
+        }
+    }
+
+    
+})
+
+
+
+
 export {postRouter}
