@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { authToken } from "./verifyToken";
+import { authToken } from "./verifyToken.js";
 
 const notifyRouter = Router();
 
