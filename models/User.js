@@ -23,6 +23,7 @@ let schema  = mongoose.Schema({
         type : Date,
         default : Date.now
     },
+    skills : [String],
     isAWorker : Boolean,
     isActive : Boolean,
     isOnline : Boolean

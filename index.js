@@ -7,6 +7,7 @@ import env from 'dotenv';
 import path from 'path'
 import { userRouter } from './routes/user.js'
 import { postRouter } from './routes/post.js'
+import notifyRouter from './routes/notify.js'
 
 env.config();
 
@@ -39,6 +40,7 @@ mongoose.connect(dbUrl,connectionParams)
     app.use('/api/auth',authRouter )
     app.use("/api/user", userRouter)
     app.use("/api/post", postRouter)
+    app.use("/api/notify", notifyRouter)
 
 
     //Index Route

@@ -54,7 +54,6 @@ authRouter.post("/user/login",async(req,res)=>{
 
 
     if(user){
-        console.log(user)
         //CHECK IF PASSWORD IS CORRECT
         const valid = await bcrypt.compare(password, user.password);
         

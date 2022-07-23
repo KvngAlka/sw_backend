@@ -2,6 +2,7 @@ import { Router } from "express";
 import { authToken } from "./verifyToken.js";
 import ClientPost from "../models/ClientPost.js";
 import { userExists, validateClientPost } from "../validation.js";
+import User from "../models/User.js";
 
 
 const postRouter  = Router();
@@ -9,9 +10,7 @@ const postRouter  = Router();
 
 
 postRouter.post("/add",authToken,async(req,res)=>{
-
     const {body} = req;
-
     const {error} = validateClientPost(body);
     if(error) return res.status(400).send(error.details[0].message)
 
@@ -101,6 +100,25 @@ postRouter.post("/worker/accept/post", authToken, async(req,res)=>{
     }
 
     
+})
+
+
+
+postRouter.post("/worker/get/listjobs",authToken,async(req,res)=>{
+    const {workerId} = req.body;
+
+    //Fetch for the skills of the 
+    if(workerId){
+        const worker = await User.find({_id : workerId})[0]
+        const {isAWorker, isActive} = worker;
+        if(isAWorker && isActive){
+            // const listJobs = await ClientPost.find({location})
+
+            // fetch list of post or jobs pertaining to worker location and skills
+        }
+    }
+    
+
 })
 
 
