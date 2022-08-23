@@ -110,12 +110,18 @@ postRouter.post("/worker/get/listjobs",authToken,async(req,res)=>{
     //Fetch for the skills of the 
     if(workerId){
         const worker = await User.find({_id : workerId})[0]
+
+        if(!worker) return res.send({code : 401, msg : "Worker does not exist"})
+        
         const {isAWorker, isActive} = worker;
         if(isAWorker && isActive){
-            // const listJobs = await ClientPost.find({location})
-
-            // fetch list of post or jobs pertaining to worker location and skills
+            const listJobs = await ClientPost.find()
+            res.send({code : 200, msg : listJobs})
+        }else{
+            res.send({code : 401, msg : "You need to be an active worker"})
         }
+    }else{
+        res.send("Worker Id required")
     }
     
 

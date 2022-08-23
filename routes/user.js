@@ -46,21 +46,7 @@ userRouter.put("/profile/update/isActive",authToken,async(req,res)=>{
 })
 
 
-userRouter.put("/profile/update/worker/skills",authToken, async(req,res)=>{
-    const {skills, workerId} = req.body;
-    if(!skills || !workerId) return res.send({code  : 401, msg : "Bad Request"})
 
-    const update = await User.updateOne({_id : workerId},{$set : {skills : skills}});
-    const {acknowledged} = update;
-    if(acknowledged){
-        const findUser = await User.find({_id : body._id});
-        const newUser = findUser[0]  //the user will be the first user found
-        res.send({msg : "Update Successful", data : newUser})
-    }else{
-        res.send({msg : "Failed to update", code : 400})
-    }
-
-})
 
 userRouter.post("/profile/delete",authToken,async(req,res)=>{
     const {phoneNumber,password,_id} = req.body;
@@ -80,6 +66,25 @@ userRouter.post("/profile/delete",authToken,async(req,res)=>{
             res.send({code : 400, msg : "phone number or password is wrong"})
         }
     }
+})
+
+
+//FOR WORKERS
+
+userRouter.put("/profile/update/worker/skills",authToken, async(req,res)=>{
+    const {skills, workerId} = req.body;
+    if(!skills || !workerId) return res.send({code  : 401, msg : "Bad Request"})
+
+    const update = await User.updateOne({_id : workerId},{$set : {skills : skills}});
+    const {acknowledged} = update;
+    if(acknowledged){
+        const findUser = await User.find({_id : body._id});
+        const newUser = findUser[0]  //the user will be the first user found
+        res.send({msg : "Update Successful", data : newUser})
+    }else{
+        res.send({msg : "Failed to update", code : 400})
+    }
+
 })
 
 
