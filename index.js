@@ -8,6 +8,7 @@ import path from 'path'
 import { userRouter } from './routes/user.js'
 import { postRouter } from './routes/post.js'
 import notifyRouter from './routes/notify.js'
+import {servicesRouter} from './routes/services.js'
 
 env.config();
 
@@ -41,6 +42,7 @@ mongoose.connect(dbUrl,connectionParams)
     app.use("/api/user", userRouter)
     app.use("/api/post", postRouter)
     app.use("/api/notify", notifyRouter)
+    app.use("/api/services", servicesRouter)
 
 
     //Index Route
