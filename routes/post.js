@@ -62,7 +62,7 @@ postRouter.put("/edit",authToken,async(req,res)=>{
 })
 
 
-postRouter.delete("/delete",authToken ,async(req,res)=>{
+postRouter.post("/delete",authToken ,async(req,res)=>{
 
     const {body} = req;
 
