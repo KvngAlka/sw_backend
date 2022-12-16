@@ -3,6 +3,8 @@ import { authToken } from "./verifyToken.js";
 import ClientPost from "../models/ClientPost.js";
 import { userExists, validateClientPost } from "../validation.js";
 import User from "../models/User.js";
+import Services from "../models/Services.js";
+import Subservices from "../models/Subservices.js";
 
 
 const postRouter  = Router();
@@ -18,14 +20,24 @@ postRouter.post("/add",authToken,async(req,res)=>{
     const post = new ClientPost({...body, isAccepted : false});
     const savedPost = await post.save();
 
-    if(savedPost){
+    if(true){
         //send notification to workers
+
         const availableWorkers = await User.updateMany(
-            {isAWorker : true}, 
             {
-                $push : { notification :  savedPost }
+                isAWorker : true, isActive : true,
+                skills : {
+                    serviceId : savedPost.serviceId,
+                    subServiceId : savedPost.subServiceId
+                }
+            }
+                , 
+            {
+                $push : { notifications :  savedPost }
             }
         )
+
+        availableWorkers
         
     }
 
@@ -82,7 +94,31 @@ postRouter.post("/get/clientposts", authToken,async(req,res)=>{
     const user = await userExists(body.phoneNumber)
     if(user){
         const posts = await ClientPost.find({ownerId : body._id});
-        res.send({code : 201, data : posts})
+        const newPosts =  await Promise.all(
+            posts.map(async(post) =>{
+
+                const {serviceId, subServiceId} = post
+                const services = await Services.find({code : serviceId});
+                const subServices = await Subservices.find({parentCode : serviceId, code : subServiceId})
+
+                const service = services[0]?._doc;
+                const subService = subServices[0]?._doc;
+                const serviceName = service?.name;
+    
+    
+                return {
+                    ...post._doc,
+                    ...service,
+                    ...subService,
+                    serviceName
+                    
+                }
+    
+            })
+
+        ) 
+        
+        res.send({code : 201, data : newPosts})
     }else{
         res.send({code : 400, msg : "UnAuthorized"})
     }
@@ -125,9 +161,9 @@ postRouter.post("/worker/get/listjobs",authToken,async(req,res)=>{
 
         if(!worker) return res.send({code : 401, msg : "Worker does not exist"})
         
-        const {isAWorker, isActive} = worker;
+        const {isAWorker, isActive, skills} = worker;
         if(isAWorker && isActive){
-            const listJobs = await ClientPost.find()
+            const listJobs = await ClientPost.find({skills})
             res.send({code : 200, msg : listJobs})
         }else{
             res.send({code : 401, msg : "You need to be an active worker"})
