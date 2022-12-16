@@ -2,10 +2,8 @@ import mongoose from "mongoose";
 
 const schema  = mongoose.Schema({
     ownerId : String,
-    title : String,
-    description : String,
-    location : String,
-    workCategory : String,
+    serviceId : String,
+    subServiceId : String,
     isAccepted : Boolean
 })
 

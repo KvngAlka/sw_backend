@@ -10,12 +10,24 @@ const postRouter  = Router();
 
 
 postRouter.post("/add",authToken,async(req,res)=>{
-    const {body} = req;
+    let {body} = req;
+    body = {...body, location : "Universtity of Cape Coast"}
     const {error} = validateClientPost(body);
     if(error) return res.status(400).send(error.details[0].message)
 
     const post = new ClientPost({...body, isAccepted : false});
     const savedPost = await post.save();
+
+    if(savedPost){
+        //send notification to workers
+        const availableWorkers = await User.updateMany(
+            {isAWorker : true}, 
+            {
+                $push : { notification :  savedPost }
+            }
+        )
+        
+    }
 
     res.status(201).send(savedPost);
 

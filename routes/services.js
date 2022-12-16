@@ -9,7 +9,6 @@ import Subservices from '../models/Subservices.js'
 const servicesRouter  = Router();
 
 
-
 servicesRouter.get("/",authToken,async(req,res)=>{
     // const {code} = req.body;
     // if(!code) {

@@ -5,7 +5,9 @@ const notifyRouter = Router();
 
 
 notifyRouter.post("/send/worker/job",authToken,(req,res)=>{
-    const {workCategory} = req.body;
+    const {workCategories} = req.body; //return list of worker skills
+    
+
 })
 
 

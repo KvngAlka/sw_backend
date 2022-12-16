@@ -53,10 +53,9 @@ export const validateClientPost = (data)=>{
     
     const schema = Joi.object({
         ownerId : Joi.string().required(),
-        title : Joi.string(),
-        description : Joi.string(),
+        serviceId : Joi.string().required(),
+        subServiceId : Joi.string().required(),
         location : Joi.string().required(),
-        workCategory : Joi.string().required()
     })
 
     let {error} = schema.validate(data);

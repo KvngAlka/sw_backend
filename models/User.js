@@ -23,7 +23,19 @@ let schema  = mongoose.Schema({
         type : Date,
         default : Date.now
     },
-    skills : [String],
+    skills : [
+        {
+            serviceId : String,
+            subServiceId : String
+        }
+    ],
+    notifications : [
+        {
+            title : String,
+            description : String,
+            from : String,
+        }
+    ],
     isAWorker : Boolean,
     isActive : Boolean,
     isOnline : Boolean

@@ -72,13 +72,14 @@ userRouter.post("/profile/delete",authToken,async(req,res)=>{
 //FOR WORKERS
 
 userRouter.put("/profile/update/worker/skills",authToken, async(req,res)=>{
-    const {skills, workerId} = req.body;
-    if(!skills || !workerId) return res.send({code  : 401, msg : "Bad Request"})
+    const {serviceId, subServiceId, workerId} = req.body;
+    if(!serviceId || !subServiceId || !workerId) return res.send({code  : 401, msg : "Bad Request"})
 
-    const update = await User.updateOne({_id : workerId},{$set : {skills : skills}});
+    const update = await User.updateOne({_id : workerId},{$push : {skills : {serviceId, subServiceId}}});
+
     const {acknowledged} = update;
     if(acknowledged){
-        const findUser = await User.find({_id : body._id});
+        const findUser = await User.find({_id : workerId});
         const newUser = findUser[0]  //the user will be the first user found
         res.send({msg : "Update Successful", data : newUser})
     }else{
