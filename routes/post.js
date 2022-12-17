@@ -69,6 +69,7 @@ postRouter.post("/delete",authToken ,async(req,res)=>{
     if(!body._id)return res.send({code: 400, msg:"Id of post required"});
 
     const post = await ClientPost.find({_id : body._id}); //res => POST[]
+    console.log("Post to be deleted:::", post)
 
     if(post[0]){
         //CHECK IF IT'S BEING DELETED BY THE OWNER
