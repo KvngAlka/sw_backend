@@ -11,6 +11,7 @@ const userRouter  = Router();
 
 userRouter.put("/profile/edit",authToken,async(req,res)=>{
     const {body} = req;
+
     let {error}  = validateUserEdit(body);
     if(error) return res.send({code : 400,msg : error.details[0].message});
 

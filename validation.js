@@ -67,7 +67,6 @@ export const validateClientPost = (data)=>{
 export const validateUserEdit = (data)=>{
 
     const schema = Joi.object({
-        _v : Joi.number(),
         _id : Joi.string(),
         fullName : Joi.string().min(6).required(),
         age : Joi.string().max(2),
@@ -76,9 +75,7 @@ export const validateUserEdit = (data)=>{
         phoneNumber : Joi.string().min(10).max(10).required(),
         location : Joi.string().required(),
         password : Joi.string().min(6).required(),
-        isAWorker : Joi.bool(),
-        isOnline : Joi.bool(),
-        isActive : Joi.bool()
+        
     })
 
     let {error} = schema.validate(data);
