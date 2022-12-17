@@ -110,9 +110,6 @@ userRouter.post("/profile/get/worker/skills",authToken, async(req,res)=>{
         res.send({msg : "Skills Fetch Successful", data : newSkills})
     }
 
-    console.log("User Skills ::::", userSkills)
-    
-   
 
 })
 
