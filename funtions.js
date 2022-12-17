@@ -29,7 +29,7 @@ export const convertService = async(list)=>{
 
     ) 
 
-    return 
+    return newPosts;
 
 }
 

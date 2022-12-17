@@ -205,7 +205,7 @@ postRouter.post("/worker/get/notifications", authToken, async(req,res)=>{
 
 
 postRouter.post("/worker/accept/post", authToken, async(req,res)=>{
-    const {postId} = req.body;
+    const {postId, workerId} = req.body;
 
     //check if post has not been already accepted
     const post = await ClientPost.find({_id : postId})[0];
@@ -213,7 +213,7 @@ postRouter.post("/worker/accept/post", authToken, async(req,res)=>{
         if(post.isAccepted) return res.send({code : 400, msg : "Job is already taken by another worker."});
 
         else {
-            const postUpdated = ClientPost.updateOne({_id },{$set : {isAccepted : true}});
+            const postUpdated = ClientPost.updateOne({_id : postId },{$set : {isAccepted : true, acceptedBy : workerId}});
             const {acknowledged} = postUpdated;
             if(acknowledged){
                 res.send({code : 201, msg : "Job accepted successfully"})
