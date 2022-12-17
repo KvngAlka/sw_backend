@@ -3,6 +3,8 @@ import User from "../models/User.js";
 import { validateUserEdit } from "../validation.js";
 import { authToken } from "./verifyToken.js";
 import bcrypt from 'bcryptjs'
+import Services from "../models/Services.js";
+import Subservices from "../models/Subservices.js";
 
 
 const userRouter  = Router();
@@ -71,6 +73,48 @@ userRouter.post("/profile/delete",authToken,async(req,res)=>{
 
 
 //FOR WORKERS
+
+
+userRouter.post("/profile/get/worker/skills",authToken, async(req,res)=>{
+    const {workerId} = req.body;
+    if(!workerId) return res.send({code  : 401, msg : "Bad Request"})
+
+   
+    const findUser = await User.find({_id : workerId});
+    const newUser = findUser[0]  //the user will be the first user found
+    const userSkills = newUser.skills;
+    if(userSkills){
+
+        const newSkills =  await Promise.all(
+            userSkills.map(async(skill) =>{
+
+                const {serviceId, subServiceId} = skill;
+                const services = await Services.find({code : serviceId});
+                const subServices = await Subservices.find({parentCode : serviceId, code : subServiceId})
+
+                const service = services[0]?._doc;
+                const subService = subServices[0]?._doc;
+                const serviceName = service?.name;
+    
+    
+                return {
+                    ...service,
+                    ...subService,
+                    serviceName
+                    
+                }
+    
+            })
+
+        ) 
+        res.send({msg : "Skills Fetch Successful", data : newSkills})
+    }
+
+    console.log("User Skills ::::", userSkills)
+    
+   
+
+})
 
 userRouter.put("/profile/update/worker/skills",authToken, async(req,res)=>{
     const {serviceId, subServiceId, workerId} = req.body;
