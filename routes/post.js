@@ -99,20 +99,22 @@ postRouter.post("/get/clientposts", authToken,async(req,res)=>{
         const newPosts =  await Promise.all(
             posts.map(async(post) =>{
 
-                const {serviceId, subServiceId} = post
+                const {serviceId, subServiceId, ownerId} = post
                 const services = await Services.find({code : serviceId});
                 const subServices = await Subservices.find({parentCode : serviceId, code : subServiceId})
 
                 const service = services[0]?._doc;
                 const subService = subServices[0]?._doc;
                 const serviceName = service?.name;
+                const client = await getUserById(ownerId)
     
     
                 return {
                     ...post._doc,
                     ...service,
                     ...subService,
-                    serviceName
+                    serviceName,
+                    location : client.location
                     
                 }
     
