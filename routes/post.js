@@ -5,7 +5,7 @@ import { userExists, validateClientPost } from "../validation.js";
 import User from "../models/User.js";
 import Services from "../models/Services.js";
 import Subservices from "../models/Subservices.js";
-import { getUserById } from "../funtions.js";
+import { convertService, getUserById } from "../funtions.js";
 
 
 const postRouter  = Router();
@@ -166,33 +166,7 @@ postRouter.post("/worker/get/notifications", authToken, async(req,res)=>{
             )
         )
 
-        const newPostsToSend =  await Promise.all(
-            postsToSend.map(async(post) =>{
-
-                const {serviceId, subServiceId, ownerId} = post;
-                const services = await Services.find({code : serviceId});
-                const subServices = await Subservices.find({parentCode : serviceId, code : subServiceId});
-                const nameOfClient = await getUserById(ownerId)
-
-                console.log(nameOfClient)
-
-                const service = services[0]?._doc;
-                const subService = subServices[0]?._doc;
-                const serviceName = service?.name;
-    
-    
-                return {
-                    ...post._doc,
-                    ...service,
-                    ...subService,
-                    nameOfClient : nameOfClient.fullName,
-                    serviceName
-                    
-                }
-    
-            })
-
-        ) 
+        const newPostsToSend =  await convertService(postsToSend);
 
         res.send({code : 201, data : newPostsToSend})
     }
@@ -208,13 +182,16 @@ postRouter.post("/worker/accept/post", authToken, async(req,res)=>{
     const {postId, workerId} = req.body;
 
     //check if post has not been already accepted
-    const post = await ClientPost.find({_id : postId})[0];
+    let post = await ClientPost.find({_id : postId});
+    post  = post[0];
+
     if(post){
         if(post.isAccepted) return res.send({code : 400, msg : "Job is already taken by another worker."});
 
         else {
-            const postUpdated = ClientPost.updateOne({_id : postId },{$set : {isAccepted : true, acceptedBy : workerId}});
+            const postUpdated = await ClientPost.updateOne({_id : postId },{$set : {isAccepted : true, acceptedBy : workerId}});
             const {acknowledged} = postUpdated;
+
             if(acknowledged){
                 res.send({code : 201, msg : "Job accepted successfully"})
             }else{
@@ -233,15 +210,20 @@ postRouter.post("/worker/get/listjobs",authToken,async(req,res)=>{
 
     //Fetch for the skills of the 
     if(workerId){
-        const worker = await User.find({_id : workerId})[0]
+        const worker = await User.find({_id : workerId})
 
-        if(!worker) return res.send({code : 401, msg : "Worker does not exist"})
+
+        if(!worker[0]) return res.send({code : 401, msg : "Worker does not exist"})
         
-        const {isAWorker, isActive, skills} = worker;
+        const {isAWorker, isActive, _id} = worker[0];
         if(isAWorker && isActive){
-            const listJobs = await ClientPost.find({skills})
-            res.send({code : 200, msg : listJobs})
+
+            const listJobs = await ClientPost.find({acceptedBy : workerId})
+            const newListJobs = await convertService(listJobs);
+
+            res.send({code : 200, msg : newListJobs})
         }else{
+
             res.send({code : 401, msg : "You need to be an active worker"})
         }
     }else{

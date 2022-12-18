@@ -4,7 +4,8 @@ const schema  = mongoose.Schema({
     ownerId : String,
     serviceId : String,
     subServiceId : String,
-    isAccepted : Boolean
+    isAccepted : Boolean,
+    acceptedBy : String
 })
 
 
