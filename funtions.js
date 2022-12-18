@@ -24,7 +24,8 @@ export const convertService = async(list)=>{
                 ...service,
                 ...subService,
                 serviceName,
-                nameOfClient : client?.fullName
+                nameOfClient : client?.fullName,
+                location : client.location
                 
             }
 
