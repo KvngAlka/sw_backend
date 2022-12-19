@@ -77,7 +77,7 @@ postRouter.post("/delete",authToken ,async(req,res)=>{
         const isOwner = post[0].ownerId === body.ownerId;
 
         if(isOwner){
-            const {acknowledged} = await ClientPost.remove({_id : body.id})
+            const {acknowledged} = await ClientPost.deleteOne({_id : body.id})
             if(acknowledged){
                 res.send({code : 201, msg : "Deleted Successfully"})
             }
@@ -103,7 +103,7 @@ postRouter.post("/get/clientposts", authToken,async(req,res)=>{
         const newPosts =  await Promise.all(
             posts.map(async(post) =>{
 
-                const {serviceId, subServiceId, ownerId} = post
+                const {serviceId, subServiceId, ownerId, _id} = post
                 const services = await Services.find({code : serviceId});
                 const subServices = await Subservices.find({parentCode : serviceId, code : subServiceId})
 
@@ -118,7 +118,8 @@ postRouter.post("/get/clientposts", authToken,async(req,res)=>{
                     ...service,
                     ...subService,
                     serviceName,
-                    location : client.location
+                    location : client.location,
+                    _id
                     
                 }
     

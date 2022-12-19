@@ -8,7 +8,7 @@ export const convertService = async(list)=>{
     const newPosts =  await Promise.all(
         list.map(async(item) =>{
 
-            const {serviceId, subServiceId, ownerId} = item;
+            const {serviceId, subServiceId, ownerId, _id} = item;
             const services = await Services.find({code : serviceId});
             const subServices = await Subservices.find({parentCode : serviceId, code : subServiceId})
 
@@ -18,16 +18,20 @@ export const convertService = async(list)=>{
 
             const client = await getUserById(ownerId)
 
-
-            return {
+            const temp = {
                 ...item._doc,
                 ...service,
                 ...subService,
                 serviceName,
                 nameOfClient : client?.fullName,
-                location : client.location
+                location : client.location,
+                _id 
                 
             }
+            
+
+
+            return 
 
         })
 
