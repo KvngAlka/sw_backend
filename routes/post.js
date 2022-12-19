@@ -63,6 +63,8 @@ postRouter.put("/edit",authToken,async(req,res)=>{
 })
 
 
+
+
 postRouter.post("/delete",authToken ,async(req,res)=>{
 
     const {body} = req;
@@ -77,7 +79,7 @@ postRouter.post("/delete",authToken ,async(req,res)=>{
         const isOwner = post[0].ownerId === body.ownerId;
 
         if(isOwner){
-            const {acknowledged} = await ClientPost.deleteOne({_id : body.id})
+            const {acknowledged} = await ClientPost.deleteOne({_id : body.id, ownerId : body.ownerId})
             if(acknowledged){
                 res.send({code : 201, msg : "Deleted Successfully"})
             }
